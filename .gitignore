@@ -11,3 +11,7 @@ programa
 tests
 *.o
 *.out
+
+# ANTLR
+/Compilador/generated/
+/Compilador/compilador

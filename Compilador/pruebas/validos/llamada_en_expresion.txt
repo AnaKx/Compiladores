@@ -1,0 +1,10 @@
+program llamadas;
+var x : int;
+
+void nada() [ { } ];
+
+main {
+    x = nada() + 3 * -x;
+    print(x > 2);
+}
+end

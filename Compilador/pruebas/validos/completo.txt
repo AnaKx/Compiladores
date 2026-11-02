@@ -1,0 +1,30 @@
+program demo;
+var i, n : int;
+var prom : float;
+
+void imprimeSuma(a : int, b : int) [
+    var s : int;
+    {
+        s = a + b;
+        print("suma:", s);
+    }
+];
+
+main {
+    read(n);
+    i = 0;
+    while (i < n) do {
+        i = i + 1;
+    };
+    if (i != n) {
+        print("error");
+    } else {
+        print("ok", i * 2);
+    };
+    prom = -3.5 * (i + 1) / 2;
+    imprimeSuma(i, n);
+    [
+        print(prom);
+    ]
+}
+end
