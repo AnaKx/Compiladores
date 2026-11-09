@@ -16,7 +16,7 @@ main {
     while (i < n) do {
         i = i + 1;
     };
-    if (i != n) {
+    if (i < n) {
         print("error");
     } else {
         print("ok", i * 2);

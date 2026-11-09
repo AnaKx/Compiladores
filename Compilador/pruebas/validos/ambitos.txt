@@ -1,0 +1,28 @@
+program ambitos;
+var x, total : int;
+var y : float;
+
+void uno(x : float) [
+    var t : int;
+    {
+        t = 1;
+        y = x * 2.0;
+        total = t;
+    }
+];
+
+void dos(a : int, b : float) [
+    var x : int;
+    {
+        x = a;
+        uno(b);
+        dos(x, b + 1.0);
+    }
+];
+
+main {
+    x = 3;
+    dos(x, y);
+    read(total);
+}
+end

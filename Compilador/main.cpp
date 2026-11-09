@@ -1,9 +1,11 @@
-// Programa principal: corre el scanner y el parser sobre un archivo fuente.
+// Programa principal: corre el scanner, el parser y el análisis semántico
+// (directorio de funciones y tablas de variables) sobre un archivo fuente.
 //
 // Uso:
 //   ./compilador archivo.txt            revisa el programa
 //   ./compilador --tokens archivo.txt   además imprime la lista de tokens
 //   ./compilador --tree archivo.txt     además imprime el árbol sintáctico
+//   ./compilador --tablas archivo.txt   además imprime el directorio de funciones
 //
 // Regresa 0 si el programa es válido y 1 si hubo errores.
 
@@ -14,6 +16,7 @@
 #include "antlr4-runtime.h"
 #include "BabyDuckLexer.h"
 #include "BabyDuckParser.h"
+#include "semantica.hpp"
 
 using namespace antlr4;
 
@@ -37,6 +40,7 @@ public:
 int main(int argc, char* argv[]) {
     bool mostrarTokens = false;
     bool mostrarArbol = false;
+    bool mostrarTablas = false;
     std::string ruta;
 
     for (int i = 1; i < argc; i++) {
@@ -45,13 +49,15 @@ int main(int argc, char* argv[]) {
             mostrarTokens = true;
         } else if (arg == "--tree") {
             mostrarArbol = true;
+        } else if (arg == "--tablas") {
+            mostrarTablas = true;
         } else {
             ruta = arg;
         }
     }
 
     if (ruta.empty()) {
-        std::cerr << "Uso: " << argv[0] << " [--tokens] [--tree] archivo\n";
+        std::cerr << "Uso: " << argv[0] << " [--tokens] [--tree] [--tablas] archivo\n";
         return 1;
     }
 
@@ -96,6 +102,18 @@ int main(int argc, char* argv[]) {
     }
 
     int totalErrores = erroresLexicos.errores + erroresSintacticos.errores;
+
+    // Semantica: solo si el programa es sintacticamente correcto. Se recorre el arbol y los puntos neuralgicos llenan el directorio de funciones
+    if (totalErrores == 0) {
+        AnalizadorSemantico semantica;
+        tree::ParseTreeWalker::DEFAULT.walk(&semantica, arbol);
+        totalErrores += semantica.errores;
+
+        if (mostrarTablas) {
+            std::cout << "--- Directorio de funciones ---\n";
+            semantica.directorio.imprimir(std::cout);
+        }
+    }
     if (totalErrores > 0) {
         std::cerr << "Programa rechazado: " << totalErrores << " error(es).\n";
         return 1;

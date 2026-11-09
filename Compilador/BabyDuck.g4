@@ -82,7 +82,6 @@ expresion
 expRelTail
     : GT exp
     | LT exp
-    | NEQ exp
     | /* ε */
     ;
 
@@ -205,7 +204,6 @@ SEMI : ';' ;
 COLON : ':' ;
 
 ASSIGN : '=' ;
-NEQ : '!=' ;
 PLUS : '+' ;
 MINUS : '-' ;
 TIMES : '*' ;
