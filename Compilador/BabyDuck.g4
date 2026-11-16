@@ -38,8 +38,9 @@ funcList
     | /* ε */
     ;
 
+// Una funcion puede ser void o regresar un valor (int/float)
 funcs
-    : VOID ID LPAREN params RPAREN LBRACKET varsList body RBRACKET SEMI
+    : (VOID | type) ID LPAREN params RPAREN LBRACKET varsList body RBRACKET SEMI
     ;
 
 params
@@ -62,13 +63,18 @@ statementList
     ;
 
 statement
-    : assign
+    : retorno
+    | assign
     | condition
     | cycle
     | f_call
     | print
     | read
     | LBRACKET statementList RBRACKET
+    ;
+
+retorno
+    : RETURN expresion SEMI
     ;
 
 assign
@@ -192,6 +198,7 @@ WHILE : 'while' ;
 DO : 'do' ;
 PRINT : 'print' ;
 READ : 'read' ;
+RETURN : 'return' ;
 
 LPAREN : '(' ;
 RPAREN : ')' ;

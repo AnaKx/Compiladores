@@ -43,13 +43,14 @@ public:
         }
     }
 
-    // PN3 void ID: se da de alta la funcion y se abre su tabla de variables
+    // PN3 (void | type) ID: se da de alta la funcion con su tipo de retorno y se abre su tabla de variables
     void enterFuncs(BabyDuckParser::FuncsContext* ctx) override {
         auto* id = ctx->ID();
         if (!id) return;
         bool ok = intentar(id, [&] { directorio.agregarFuncion(id->getText(), linea(id)); });
         // Si la funcion esta repetida no se analiza su cuerpo, para no mezclar sus variables con las de la primera ni generar errores en cascada
         omitirFuncion = !ok;
+        if (ok && ctx->type()) directorio.fijarRetorno(tipoDe(ctx->type()));
     }
 
     // PN4 ID : type  (cada parametro) lleva a la firma y a la tabla local
@@ -60,10 +61,34 @@ public:
         agregarParametro(ctx->ID(), ctx->type());
     }
 
-    // PN5: ] ; (fin de la funcion), se cierra su ambito, se regresa a globales
-    void exitFuncs(BabyDuckParser::FuncsContext*) override {
+    // PN5: ] ; (fin de la funcion), una funcion con tipo debe tener un return;
+    //      se cierra su ambito, se regresa a globales
+    void exitFuncs(BabyDuckParser::FuncsContext* ctx) override {
+        const Funcion* f = directorio.enFuncion();
+        if (!omitirFuncion && f && !f->esVoid && !f->tieneReturn && ctx->ID()) {
+            intentar(ctx->ID(), [&] {
+                throw ErrorSemantico("la función '" + f->nombre + "' es " +
+                                         nombreTipo(f->tipoRetorno) + " y no tiene return",
+                                     linea(ctx->ID()));
+            });
+        }
         directorio.terminarFuncion();
         omitirFuncion = false;
+    }
+
+    // PN9 return: solo dentro de una funcion que no sea void
+    void enterRetorno(BabyDuckParser::RetornoContext* ctx) override {
+        auto* r = ctx->RETURN();
+        if (omitirFuncion || !r) return;
+        const Funcion* f = directorio.enFuncion();
+        intentar(r, [&] {
+            if (!f) throw ErrorSemantico("return fuera de una función", linea(r));
+            if (f->esVoid) {
+                throw ErrorSemantico("la función '" + f->nombre + "' es void y no puede regresar un valor",
+                                     linea(r));
+            }
+        });
+        directorio.marcarReturn();
     }
 
     // PN6 main el cuerpo de main usa el ambito global
@@ -95,7 +120,7 @@ public:
         });
     }
 
-private:
+protected:
     bool omitirFuncion = false;
 
     using Nodo = antlr4::tree::TerminalNode;
@@ -119,6 +144,15 @@ private:
         }
     }
 
+    // arglist : expresion arglistTail | ε ;  arglistTail : , expresion arglistTail | ε
+    static std::size_t numArgumentos(BabyDuckParser::ArglistContext* args) {
+        if (!args || !args->expresion()) return 0;
+        std::size_t n = 1;
+        for (auto* t = args->arglistTail(); t && t->expresion(); t = t->arglistTail()) n++;
+        return n;
+    }
+
+private:
     void agregarParametro(Nodo* id, BabyDuckParser::TypeContext* tipo) {
         if (omitirFuncion || !id || !tipo) return; // params vacio
         intentar(id, [&] { directorio.agregarParametro(id->getText(), tipoDe(tipo), linea(id)); });
@@ -142,13 +176,5 @@ private:
             ids.push_back(e->ID());
         }
         return ids;
-    }
-
-    // arglist : expresion arglistTail | ε ;  arglistTail : , expresion arglistTail | ε
-    static std::size_t numArgumentos(BabyDuckParser::ArglistContext* args) {
-        if (!args || !args->expresion()) return 0;
-        std::size_t n = 1;
-        for (auto* t = args->arglistTail(); t && t->expresion(); t = t->arglistTail()) n++;
-        return n;
     }
 };

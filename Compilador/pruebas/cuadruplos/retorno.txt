@@ -1,0 +1,35 @@
+program retorno;
+var n, r : int;
+var p : float;
+
+int factorial(k : int) [
+    {
+        if (k < 2) {
+            return 1;
+        };
+        return k * factorial(k - 1);
+    }
+];
+
+float promedio(a : int, b : int) [
+    var s : int;
+    {
+        s = a + b;
+        return s / 2.0;
+    }
+];
+
+void muestra(x : int) [
+    {
+        print("valor:", x);
+    }
+];
+
+main {
+    read(n);
+    r = factorial(n) + 1;
+    p = promedio(n, r) * 2;
+    muestra(factorial(3));
+    factorial(4);
+}
+end

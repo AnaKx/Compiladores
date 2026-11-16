@@ -16,3 +16,4 @@ tests
 /Compilador/generated/
 /Compilador/compilador
 /Compilador/test_tablas
+/Compilador/test_cuadruplos

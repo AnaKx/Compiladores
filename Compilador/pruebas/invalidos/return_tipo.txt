@@ -1,0 +1,4 @@
+program p;
+int f() [ { return 2.5; } ];
+main { f(); }
+end

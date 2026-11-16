@@ -1,0 +1,22 @@
+program lineales;
+var base, altura, n1, n2, n3 : int;
+var area, prom, celsius, fahr : float;
+
+main {
+    read(base);
+    read(altura);
+    area = base * altura / 2;
+    print("area:", area);
+
+    read(n1); read(n2); read(n3);
+    prom = (n1 + n2 + n3) / 3.0;
+    print("promedio:", prom, "mayor a 70:", prom > 70);
+
+    read(celsius);
+    fahr = celsius * 9 / 5 + 32;
+    print(celsius, "C =", fahr, "F");
+
+    n1 = -n2 + (n3 - (n1 * 2 - 1)) * -1;
+    print(n1 < -n3);
+}
+end

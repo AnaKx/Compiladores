@@ -8,12 +8,14 @@
 //   └── funciones : nombre -> Funcion
 //         └── Funcion
 //               ├── nombre, linea
+//               ├── esVoid, tipoRetorno     (void o el tipo que regresa)
 //               ├── parametros : [Tipo]     (en orden, para revisar llamadas)
 //               └── variables  : TablaVariables   (params + vars locales)
 //
 // Se usan tablas hash (std::unordered_map) porque la operación más frecuente es
 // buscar un nombre (cada vez que aparece un ID), y la búsqueda es O(1) en promedio.
-// Todas las funciones de BabyDuck son void, por eso Funcion no guarda tipo de retorno.
+// Una función con tipo deja su valor en una variable global con su mismo nombre
+// (el cuádruplo RETURN la escribe y quien la llamó la copia después del GOSUB).
 
 #pragma once
 
@@ -78,7 +80,11 @@ struct Funcion {
     std::string nombre;
     int linea = 0;
     std::vector<Tipo> parametros; // tipos en orden
-    TablaVariables variables; // parámetros + variables locales
+    TablaVariables variables; // parametros + variables locales
+    int inicio = -1; // cuadruplo donde empieza su codigo (destino del GOSUB)
+    bool esVoid = true;
+    Tipo tipoRetorno = Tipo::ERROR; // solo vale si !esVoid
+    bool tieneReturn = false; // si su cuerpo tiene al menos un return
 };
 
 class DirectorioFunciones {
@@ -135,6 +141,23 @@ public:
         actual(linea).variables.agregar(nombre, tipo, linea);
     }
 
+    // Tipo de retorno de la funcion actual (no se llama para funciones void)
+    void fijarRetorno(Tipo tipo) {
+        if (!funcionActual) return;
+        funcionActual->esVoid = false;
+        funcionActual->tipoRetorno = tipo;
+    }
+
+    // Marca que la funcion actual tiene un return
+    void marcarReturn() {
+        if (funcionActual) funcionActual->tieneReturn = true;
+    }
+
+    // Cuadruplo donde empieza el codigo de la funcion actual
+    void fijarInicio(int cuadruplo) {
+        if (funcionActual) funcionActual->inicio = cuadruplo;
+    }
+
     // Al terminar una funcion (o al llegar a main) se regresa al ambito global
     void terminarFuncion() { funcionActual = nullptr; }
 
@@ -171,7 +194,8 @@ public:
         imprimirTabla(os, globales, "    ");
         for (const auto& n : orden) {
             const Funcion& f = funciones.at(n);
-            os << "  Función " << f.nombre << "(";
+            os << "  Función " << (f.esVoid ? "void" : nombreTipo(f.tipoRetorno)) << " "
+               << f.nombre << "(";
             for (std::size_t i = 0; i < f.parametros.size(); i++) {
                 os << (i ? ", " : "") << nombreTipo(f.parametros[i]);
             }

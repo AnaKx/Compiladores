@@ -1,0 +1,453 @@
+==================================================================
+ pruebas/validos/ambitos.txt
+==================================================================
+     1	program ambitos;
+     2	var x, total : int;
+     3	var y : float;
+     4	
+     5	void uno(x : float) [
+     6	    var t : int;
+     7	    {
+     8	        t = 1;
+     9	        y = x * 2.0;
+    10	        total = t;
+    11	    }
+    12	];
+    13	
+    14	void dos(a : int, b : float) [
+    15	    var x : int;
+    16	    {
+    17	        x = a;
+    18	        uno(b);
+    19	        dos(x, b + 1.0);
+    20	    }
+    21	];
+    22	
+    23	main {
+    24	    x = 3;
+    25	    dos(x, y);
+    26	    read(total);
+    27	}
+    28	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 16)
+   1: (=, 1, _, t)
+   2: (*, x, 2.0, _t1)
+   3: (=, _t1, _, y)
+   4: (=, t, _, total)
+   5: (ENDFUNC, _, _, _)
+   6: (=, a, _, x)
+   7: (ERA, _, _, uno)
+   8: (PARAM, b, _, par1)
+   9: (GOSUB, uno, _, 1)
+  10: (ERA, _, _, dos)
+  11: (PARAM, x, _, par1)
+  12: (+, b, 1.0, _t2)
+  13: (PARAM, _t2, _, par2)
+  14: (GOSUB, dos, _, 6)
+  15: (ENDFUNC, _, _, _)
+  16: (=, 3, _, x)
+  17: (ERA, _, _, dos)
+  18: (PARAM, x, _, par1)
+  19: (PARAM, y, _, par2)
+  20: (GOSUB, dos, _, 6)
+  21: (read, _, _, total)
+  22: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/validos/completo.txt
+==================================================================
+     1	program demo;
+     2	var i, n : int;
+     3	var prom : float;
+     4	
+     5	void imprimeSuma(a : int, b : int) [
+     6	    var s : int;
+     7	    {
+     8	        s = a + b;
+     9	        print("suma:", s);
+    10	    }
+    11	];
+    12	
+    13	main {
+    14	    read(n);
+    15	    i = 0;
+    16	    while (i < n) do {
+    17	        i = i + 1;
+    18	    };
+    19	    if (i < n) {
+    20	        print("error");
+    21	    } else {
+    22	        print("ok", i * 2);
+    23	    };
+    24	    prom = -3.5 * (i + 1) / 2;
+    25	    imprimeSuma(i, n);
+    26	    [
+    27	        print(prom);
+    28	    ]
+    29	}
+    30	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 6)
+   1: (+, a, b, _t1)
+   2: (=, _t1, _, s)
+   3: (print, _, _, "suma:")
+   4: (print, _, _, s)
+   5: (ENDFUNC, _, _, _)
+   6: (read, _, _, n)
+   7: (=, 0, _, i)
+   8: (<, i, n, _t2)
+   9: (GOTOF, _t2, _, 13)
+  10: (+, i, 1, _t3)
+  11: (=, _t3, _, i)
+  12: (GOTO, _, _, 8)
+  13: (<, i, n, _t4)
+  14: (GOTOF, _t4, _, 17)
+  15: (print, _, _, "error")
+  16: (GOTO, _, _, 20)
+  17: (print, _, _, "ok")
+  18: (*, i, 2, _t5)
+  19: (print, _, _, _t5)
+  20: (+, i, 1, _t6)
+  21: (*, -3.5, _t6, _t7)
+  22: (/, _t7, 2, _t8)
+  23: (=, _t8, _, prom)
+  24: (ERA, _, _, imprimeSuma)
+  25: (PARAM, i, _, par1)
+  26: (PARAM, n, _, par2)
+  27: (GOSUB, imprimeSuma, _, 1)
+  28: (print, _, _, prom)
+  29: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/validos/minimo.txt
+==================================================================
+     1	program vacio;
+     2	main { }
+     3	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 1)
+   1: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/cuadruplos/control.txt
+==================================================================
+     1	program control;
+     2	var i, j, n : int;
+     3	var suma : float;
+     4	
+     5	void muestra(a : int, b : float) [
+     6	    {
+     7	        if (a > 0) {
+     8	            print(a, b);
+     9	        };
+    10	    }
+    11	];
+    12	
+    13	main {
+    14	    read(n);
+    15	    i = 0;
+    16	    suma = 0;
+    17	    while (i < n) do {
+    18	        j = 0;
+    19	        while (j < i) do {
+    20	            if (j > 2) {
+    21	                suma = suma + j;
+    22	            } else {
+    23	                suma = suma - 1;
+    24	            };
+    25	            j = j + 1;
+    26	        };
+    27	        i = i + 1;
+    28	    };
+    29	    muestra(i * 2, suma / n);
+    30	    if (suma < 0) {
+    31	        print("negativa");
+    32	    };
+    33	}
+    34	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 6)
+   1: (>, a, 0, _t1)
+   2: (GOTOF, _t1, _, 5)
+   3: (print, _, _, a)
+   4: (print, _, _, b)
+   5: (ENDFUNC, _, _, _)
+   6: (read, _, _, n)
+   7: (=, 0, _, i)
+   8: (=, 0, _, suma)
+   9: (<, i, n, _t2)
+  10: (GOTOF, _t2, _, 27)
+  11: (=, 0, _, j)
+  12: (<, j, i, _t3)
+  13: (GOTOF, _t3, _, 24)
+  14: (>, j, 2, _t4)
+  15: (GOTOF, _t4, _, 19)
+  16: (+, suma, j, _t5)
+  17: (=, _t5, _, suma)
+  18: (GOTO, _, _, 21)
+  19: (-, suma, 1, _t6)
+  20: (=, _t6, _, suma)
+  21: (+, j, 1, _t7)
+  22: (=, _t7, _, j)
+  23: (GOTO, _, _, 12)
+  24: (+, i, 1, _t8)
+  25: (=, _t8, _, i)
+  26: (GOTO, _, _, 9)
+  27: (ERA, _, _, muestra)
+  28: (*, i, 2, _t9)
+  29: (PARAM, _t9, _, par1)
+  30: (/, suma, n, _t10)
+  31: (PARAM, _t10, _, par2)
+  32: (GOSUB, muestra, _, 1)
+  33: (<, suma, 0, _t11)
+  34: (GOTOF, _t11, _, 36)
+  35: (print, _, _, "negativa")
+  36: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/cuadruplos/lineales.txt
+==================================================================
+     1	program lineales;
+     2	var base, altura, n1, n2, n3 : int;
+     3	var area, prom, celsius, fahr : float;
+     4	
+     5	main {
+     6	    read(base);
+     7	    read(altura);
+     8	    area = base * altura / 2;
+     9	    print("area:", area);
+    10	
+    11	    read(n1); read(n2); read(n3);
+    12	    prom = (n1 + n2 + n3) / 3.0;
+    13	    print("promedio:", prom, "mayor a 70:", prom > 70);
+    14	
+    15	    read(celsius);
+    16	    fahr = celsius * 9 / 5 + 32;
+    17	    print(celsius, "C =", fahr, "F");
+    18	
+    19	    n1 = -n2 + (n3 - (n1 * 2 - 1)) * -1;
+    20	    print(n1 < -n3);
+    21	}
+    22	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 1)
+   1: (read, _, _, base)
+   2: (read, _, _, altura)
+   3: (*, base, altura, _t1)
+   4: (/, _t1, 2, _t2)
+   5: (=, _t2, _, area)
+   6: (print, _, _, "area:")
+   7: (print, _, _, area)
+   8: (read, _, _, n1)
+   9: (read, _, _, n2)
+  10: (read, _, _, n3)
+  11: (+, n1, n2, _t3)
+  12: (+, _t3, n3, _t4)
+  13: (/, _t4, 3.0, _t5)
+  14: (=, _t5, _, prom)
+  15: (print, _, _, "promedio:")
+  16: (print, _, _, prom)
+  17: (print, _, _, "mayor a 70:")
+  18: (>, prom, 70, _t6)
+  19: (print, _, _, _t6)
+  20: (read, _, _, celsius)
+  21: (*, celsius, 9, _t7)
+  22: (/, _t7, 5, _t8)
+  23: (+, _t8, 32, _t9)
+  24: (=, _t9, _, fahr)
+  25: (print, _, _, celsius)
+  26: (print, _, _, "C =")
+  27: (print, _, _, fahr)
+  28: (print, _, _, "F")
+  29: (NEG, n2, _, _t10)
+  30: (*, n1, 2, _t11)
+  31: (-, _t11, 1, _t12)
+  32: (-, n3, _t12, _t13)
+  33: (*, _t13, -1, _t14)
+  34: (+, _t10, _t14, _t15)
+  35: (=, _t15, _, n1)
+  36: (NEG, n3, _, _t16)
+  37: (<, n1, _t16, _t17)
+  38: (print, _, _, _t17)
+  39: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/cuadruplos/llamadas_y_ambitos.txt
+==================================================================
+     1	program llamadas;
+     2	var x : int;
+     3	var y : float;
+     4	
+     5	void doble(n : int) [
+     6	    var x : float;
+     7	    {
+     8	        x = n * 2;
+     9	        y = x;
+    10	    }
+    11	];
+    12	
+    13	main {
+    14	    doble(x * (x + 1));
+    15	    y = x / 2;
+    16	}
+    17	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 5)
+   1: (*, n, 2, _t1)
+   2: (=, _t1, _, x)
+   3: (=, x, _, y)
+   4: (ENDFUNC, _, _, _)
+   5: (ERA, _, _, doble)
+   6: (+, x, 1, _t2)
+   7: (*, x, _t2, _t3)
+   8: (PARAM, _t3, _, par1)
+   9: (GOSUB, doble, _, 1)
+  10: (/, x, 2, _t4)
+  11: (=, _t4, _, y)
+  12: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/cuadruplos/precedencia.txt
+==================================================================
+     1	program precedencia;
+     2	var a, b, c, d : int;
+     3	var f : float;
+     4	
+     5	main {
+     6	    a = b + c * d;
+     7	    a = (b + c) * d;
+     8	    a = b - c - d;
+     9	    a = b / c * d;
+    10	    f = -a + 3 * -2.5;
+    11	    print(a + b > c * d, "fin");
+    12	    read(f);
+    13	}
+    14	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 1)
+   1: (*, c, d, _t1)
+   2: (+, b, _t1, _t2)
+   3: (=, _t2, _, a)
+   4: (+, b, c, _t3)
+   5: (*, _t3, d, _t4)
+   6: (=, _t4, _, a)
+   7: (-, b, c, _t5)
+   8: (-, _t5, d, _t6)
+   9: (=, _t6, _, a)
+  10: (/, b, c, _t7)
+  11: (*, _t7, d, _t8)
+  12: (=, _t8, _, a)
+  13: (NEG, a, _, _t9)
+  14: (*, 3, -2.5, _t10)
+  15: (+, _t9, _t10, _t11)
+  16: (=, _t11, _, f)
+  17: (+, a, b, _t12)
+  18: (*, c, d, _t13)
+  19: (>, _t12, _t13, _t14)
+  20: (print, _, _, _t14)
+  21: (print, _, _, "fin")
+  22: (read, _, _, f)
+  23: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/cuadruplos/retorno.txt
+==================================================================
+     1	program retorno;
+     2	var n, r : int;
+     3	var p : float;
+     4	
+     5	int factorial(k : int) [
+     6	    {
+     7	        if (k < 2) {
+     8	            return 1;
+     9	        };
+    10	        return k * factorial(k - 1);
+    11	    }
+    12	];
+    13	
+    14	float promedio(a : int, b : int) [
+    15	    var s : int;
+    16	    {
+    17	        s = a + b;
+    18	        return s / 2.0;
+    19	    }
+    20	];
+    21	
+    22	void muestra(x : int) [
+    23	    {
+    24	        print("valor:", x);
+    25	    }
+    26	];
+    27	
+    28	main {
+    29	    read(n);
+    30	    r = factorial(n) + 1;
+    31	    p = promedio(n, r) * 2;
+    32	    muestra(factorial(3));
+    33	    factorial(4);
+    34	}
+    35	end
+
+--- Cuádruplos ---
+   0: (GOTO, _, _, 20)
+   1: (<, k, 2, _t1)
+   2: (GOTOF, _t1, _, 4)
+   3: (RETURN, 1, _, factorial)
+   4: (ERA, _, _, factorial)
+   5: (-, k, 1, _t2)
+   6: (PARAM, _t2, _, par1)
+   7: (GOSUB, factorial, _, 1)
+   8: (=, factorial, _, _t3)
+   9: (*, k, _t3, _t4)
+  10: (RETURN, _t4, _, factorial)
+  11: (ENDFUNC, _, _, _)
+  12: (+, a, b, _t5)
+  13: (=, _t5, _, s)
+  14: (/, s, 2.0, _t6)
+  15: (RETURN, _t6, _, promedio)
+  16: (ENDFUNC, _, _, _)
+  17: (print, _, _, "valor:")
+  18: (print, _, _, x)
+  19: (ENDFUNC, _, _, _)
+  20: (read, _, _, n)
+  21: (ERA, _, _, factorial)
+  22: (PARAM, n, _, par1)
+  23: (GOSUB, factorial, _, 1)
+  24: (=, factorial, _, _t7)
+  25: (+, _t7, 1, _t8)
+  26: (=, _t8, _, r)
+  27: (ERA, _, _, promedio)
+  28: (PARAM, n, _, par1)
+  29: (PARAM, r, _, par2)
+  30: (GOSUB, promedio, _, 12)
+  31: (=, promedio, _, _t9)
+  32: (*, _t9, 2, _t10)
+  33: (=, _t10, _, p)
+  34: (ERA, _, _, muestra)
+  35: (ERA, _, _, factorial)
+  36: (PARAM, 3, _, par1)
+  37: (GOSUB, factorial, _, 1)
+  38: (=, factorial, _, _t11)
+  39: (PARAM, _t11, _, par1)
+  40: (GOSUB, muestra, _, 17)
+  41: (ERA, _, _, factorial)
+  42: (PARAM, 4, _, par1)
+  43: (GOSUB, factorial, _, 1)
+  44: (END, _, _, _)
+Programa aceptado.
+

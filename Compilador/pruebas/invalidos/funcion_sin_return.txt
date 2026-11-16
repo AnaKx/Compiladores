@@ -1,0 +1,5 @@
+program p;
+var x : int;
+int f() [ { x = 1; } ];
+main { x = f(); }
+end

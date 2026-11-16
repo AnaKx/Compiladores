@@ -1,0 +1,14 @@
+program precedencia;
+var a, b, c, d : int;
+var f : float;
+
+main {
+    a = b + c * d;
+    a = (b + c) * d;
+    a = b - c - d;
+    a = b / c * d;
+    f = -a + 3 * -2.5;
+    print(a + b > c * d, "fin");
+    read(f);
+}
+end

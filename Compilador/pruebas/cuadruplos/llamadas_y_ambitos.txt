@@ -1,0 +1,17 @@
+program llamadas;
+var x : int;
+var y : float;
+
+void doble(n : int) [
+    var x : float;
+    {
+        x = n * 2;
+        y = x;
+    }
+];
+
+main {
+    doble(x * (x + 1));
+    y = x / 2;
+}
+end

@@ -1,0 +1,5 @@
+program p;
+var y : float;
+void f(a : int) [ { } ];
+main { f(y); }
+end
