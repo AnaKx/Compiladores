@@ -1,34 +1,22 @@
-// Traducción a cuádruplos de expresiones (aritméticas y relacionales), estatutos
-// lineales (asignación, read, print), estatutos de control (if, while) y llamadas
-// a función.
+// ============================================================================
+// generador.hpp
+// Fase 4: código intermedio (incluye la fase 3 por herencia)
 //
-// Hereda del AnalizadorSemantico: el mismo recorrido llena el directorio de
-// funciones y, con él, sabe el tipo de cada variable en el ámbito actual.
+//   texto ─► scanner ─► tokens ─► parser ─► árbol ─► SEMÁNTICA ─► CUÁDRUPLOS
 //
-// Algoritmo (pilas de cuadruplos.hpp, sobre Stack/Queue de la Tarea 1):
-//   - Cada operando (variable, constante o temporal) entra a PilaO y su tipo a PTipos.
-//   - Cada operador entra a POper al leerlo.
-//   - Al terminar el operando derecho de un operador se sacan dos operandos y el
-//     operador, se revisa el tipo con el cubo semántico, se genera
-//     (op, izq, der, tN) y el temporal tN entra a PilaO.
-//   - '(' mete un fondo falso a POper para que los operadores de afuera esperen
-//     a que termine la subexpresión; ')' lo saca.
+// Qué hace:
+//   Clase GeneradorCuadruplos: los puntos neurálgicos que traducen el programa a
+//   cuádruplos: expresiones, asignación/read/print, if/while (con saltos que se
+//   rellenan después) y llamadas a función. También revisa tipos con el cubo.
 //
-// Precedencia: * / se resuelven al salir de cada factor, + - al salir de cada
-// término y > < al salir de la expresión, así que * / quedan más "adentro".
-// Como cada operador se resuelve al terminar su operando derecho, son asociativos
-// a la izquierda: a - b - c = (a - b) - c.
-//
-// Control: GOTOF/GOTO se generan con el destino vacío y su posición se guarda en
-// PSaltos; cuando se llega al destino se "rellena" (backpatching).
-// Llamadas: ERA (reserva espacio), PARAM por argumento, GOSUB al inicio de la
-// función; cada función termina con ENDFUNC. Una función con tipo regresa con
-// RETURN, que deja el valor en una variable global con su nombre; si la llamada
-// está en una expresión, después del GOSUB se copia ese valor a un temporal. El programa empieza con un GOTO a main
-// y termina con END.
-//
-// Los temporales se llaman _t1, _t2, ... (un ID de BabyDuck no puede empezar con
-// '_', así que no chocan con variables del programa).
+// Papel en el proceso:
+//   Es la clase con la que main.cpp recorre el árbol. Hereda de
+//   AnalizadorSemantico, así que un solo recorrido hace la semántica y la
+//   traducción.
+//   Recibe: el árbol del parser.  Entrega: codigo.cuadruplos (la fila final) y
+//   el directorio lleno.
+//   Usa: cuadruplos.hpp, semantica.hpp (y por ellos todo lo demás).
+// ============================================================================
 
 #pragma once
 
@@ -73,9 +61,8 @@ public:
     // PN-E5  al terminar un factor:
     //   ( expresion ) se quita el fondo falso (el resultado ya esta en PilaO)
     //   ID / cte se mete el operando (con su signo)
-    //   llamada con tipo: (=, funcion, _, tN) copia el valor regresado a un temporal;
-    //   llamada void: error, no regresa valor
-    // y despues, si arriba de POper hay * o /, se genera ese cuadruplo.
+    //   llamada con tipo: (=, dirRegreso, _, tN) copia el valor regresado a un temporal;
+    //   llamada void: error, no regresa valor y despues, si arriba de POper hay * o /, se genera ese cuadruplo
     void exitFactor(BabyDuckParser::FactorContext* ctx) override {
         if (omitirFuncion) return;
         if (ctx->LPAREN()) {
@@ -89,8 +76,8 @@ public:
             const Funcion* f = id ? directorio.buscarFuncion(id->getText()) : nullptr;
             if (f && !f->esVoid) {
                 // Justo despues del GOSUB: el valor se copia antes de que otra llamada lo pise
-                std::string temp = nuevoTemporal();
-                codigo.generar("=", f->nombre, "", temp);
+                int temp = nuevoTemporal(f->tipoRetorno, id);
+                codigo.generar("=", dir(f->direccionRetorno), "", dir(temp));
                 codigo.pushOperando(temp, f->tipoRetorno);
             } else {
                 if (f) {
@@ -100,7 +87,7 @@ public:
                                              linea(id));
                     });
                 }
-                codigo.pushOperando(id ? id->getText() : "?", Tipo::ERROR);
+                codigo.pushOperando(memoria::SIN_DIRECCION, Tipo::ERROR);
             }
         }
         resolverSi(Op::MULT, Op::DIV);
@@ -129,7 +116,7 @@ public:
                                      linea(ctx->ASSIGN()));
             });
         }
-        codigo.generar(simboloOp(Op::ASIGNA), valor, "", v->nombre);
+        codigo.generar(simboloOp(Op::ASIGNA), dir(valor), "", dir(v->direccion));
     }
 
     // PN-R1  return expresion ; : revisa el tipo contra el de la funcion y genera
@@ -147,23 +134,27 @@ public:
                                      linea(ctx->RETURN()));
             });
         }
-        codigo.generar("RETURN", valor, "", f->nombre);
+        codigo.generar("RETURN", dir(valor), "", dir(f->direccionRetorno));
     }
 
     // PN-L2  read ( ID ) ; genera (read, _, _, ID)
     void exitRead(BabyDuckParser::ReadContext* ctx) override {
         auto* id = ctx->ID();
-        if (omitirFuncion || !id || !directorio.buscarVariable(id->getText())) return;
-        codigo.generar("read", "", "", id->getText());
+        if (omitirFuncion || !id) return;
+        const Variable* v = directorio.buscarVariable(id->getText());
+        if (v) codigo.generar("read", "", "", dir(v->direccion));
     }
 
-    // PN-L3  cada elemento de print genera (print, _, _, valor); un letrero va tal cual, con comillas
+    // PN-L3  cada elemento de print genera (print, _, _, valor); un letrero es una
+    //        constante string con su propia direccion
     void exitPrintItem(BabyDuckParser::PrintItemContext* ctx) override {
         if (omitirFuncion) return;
-        if (ctx->CTE_STRING()) {
-            codigo.generar("print", "", "", ctx->CTE_STRING()->getText());
+        if (auto* s = ctx->CTE_STRING()) {
+            int d = memoria::SIN_DIRECCION;
+            intentar(s, [&] { d = directorio.letrero(s->getText(), linea(s)); });
+            codigo.generar("print", "", "", dir(d));
         } else if (!codigo.pilaO.empty()) {
-            codigo.generar("print", "", "", codigo.popOperando().first);
+            codigo.generar("print", "", "", dir(codigo.popOperando().first));
         }
     }
 
@@ -226,7 +217,7 @@ public:
         pushOperador(Op::FONDO_FALSO, ctx->LPAREN());
     }
 
-    // PN-F2  despues de cada argumento: (PARAM, valor, _, parK) y se revisa su tipo
+    // PN-F2  despues de cada argumento: (PARAM, valor, _, dirParametroK) y se revisa su tipo
     // PN-E7  al terminar una expresion: si arriba de POper hay > o <, se genera
     void exitExpresion(BabyDuckParser::ExpresionContext* ctx) override {
         if (omitirFuncion) return;
@@ -274,7 +265,6 @@ private:
     // Llamadas abiertas (pueden anidarse en los argumentos): funcion y argumentos vistos
     Stack<std::pair<const Funcion*, std::size_t>> llamadas;
     std::size_t saltoMain = 0; // GOTO inicial, se rellena al llegar a main
-    int temporales = 0;
 
     // Saca la condicion de PilaO, revisa que sea bool y genera (GOTOF, cond, _, ?)
     std::size_t gotoFalso(Nodo* donde) {
@@ -286,7 +276,7 @@ private:
                                      linea(donde));
             });
         }
-        return codigo.generar("GOTOF", cond, "", "");
+        return codigo.generar("GOTOF", dir(cond), "", "");
     }
 
     // Saca el argumento de PilaO, revisa su tipo contra el parametro y genera PARAM
@@ -295,6 +285,8 @@ private:
         auto [valor, tipo] = codigo.popOperando();
         Tipo t = tipo;
         std::size_t num = ++k;
+        int destino = memoria::SIN_DIRECCION;
+        if (f && num <= f->dirParametros.size()) destino = f->dirParametros[num - 1];
         if (f && num <= f->parametros.size() && t != Tipo::ERROR) {
             Tipo esperado = f->parametros[num - 1];
             if (resultado(esperado, t, Op::ASIGNA) == Tipo::ERROR) {
@@ -309,10 +301,18 @@ private:
                 errores++;
             }
         }
-        codigo.generar("PARAM", valor, "", "par" + std::to_string(num));
+        codigo.generar("PARAM", dir(valor), "", dir(destino));
     }
 
-    std::string nuevoTemporal() { return "_t" + std::to_string(++temporales); }
+    static std::string dir(int direccion) { return std::to_string(direccion); }
+
+    // Pide un temporal del tipo dado al ambito actual. Un resultado con error de tipo no ocupa memoria (el programa se rechaza y no se imprimen cuadruplos).
+    int nuevoTemporal(Tipo tipo, Nodo* donde) {
+        int d = memoria::SIN_DIRECCION;
+        if (tipo == Tipo::ERROR) return d;
+        intentar(donde, [&] { d = directorio.temporal(tipo, linea(donde)); });
+        return d;
+    }
 
     void pushOperador(Op op, Nodo* token) {
         codigo.poper.push(op);
@@ -343,8 +343,8 @@ private:
                                      linea(token));
             });
         }
-        std::string temp = nuevoTemporal();
-        codigo.generar(simboloOp(op), izq, der, temp);
+        int temp = nuevoTemporal(t, token);
+        codigo.generar(simboloOp(op), dir(izq), dir(der), dir(temp));
         codigo.pushOperando(temp, t);
     }
 
@@ -352,22 +352,28 @@ private:
         return signo && signo->MINUS();
     }
 
-    // ID con signo opcional; -x genera (NEG, x, _, tN)
+    // ID con signo opcional: entra su direccion; -x genera (NEG, x, _, tN)
     void operandoVariable(Nodo* id, BabyDuckParser::SignOptContext* signo) {
         const Variable* v = directorio.buscarVariable(id->getText());
         Tipo tipo = v ? v->tipo : Tipo::ERROR; // no declarada: ya se reporto
+        int d = v ? v->direccion : memoria::SIN_DIRECCION;
         if (!negativo(signo)) {
-            codigo.pushOperando(id->getText(), tipo);
+            codigo.pushOperando(d, tipo);
             return;
         }
-        std::string temp = nuevoTemporal();
-        codigo.generar("NEG", id->getText(), "", temp);
-        codigo.pushOperando(temp, resultadoUnario(tipo));
+        Tipo t = resultadoUnario(tipo);
+        int temp = nuevoTemporal(t, id);
+        codigo.generar("NEG", dir(d), "", dir(temp));
+        codigo.pushOperando(temp, t);
     }
 
-    // Una constante con signo es una sola constante: -3.5
+    // Una constante con signo es una sola constante (-3.5); entra su direccion de la tabla de constantes
     void operandoConstante(BabyDuckParser::CteContext* cte, BabyDuckParser::SignOptContext* signo) {
+        Nodo* token = cte->CTE_FLOAT() ? cte->CTE_FLOAT() : cte->CTE_INT();
         Tipo tipo = cte->CTE_FLOAT() ? Tipo::FLOAT : Tipo::INT;
-        codigo.pushOperando((negativo(signo) ? "-" : "") + cte->getText(), tipo);
+        std::string valor = (negativo(signo) ? "-" : "") + cte->getText();
+        int d = memoria::SIN_DIRECCION;
+        intentar(token, [&] { d = directorio.constante(valor, tipo, linea(token)); });
+        codigo.pushOperando(d, tipo);
     }
 };

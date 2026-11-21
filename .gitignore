@@ -15,5 +15,5 @@ tests
 # ANTLR
 /Compilador/generated/
 /Compilador/compilador
-/Compilador/test_tablas
-/Compilador/test_cuadruplos
+/Compilador/pruebas/2_semantica/test_tablas
+/Compilador/pruebas/3_codigo_intermedio/test_cuadruplos

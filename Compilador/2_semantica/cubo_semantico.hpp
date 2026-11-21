@@ -1,4 +1,21 @@
-// Cubo semantico de BabyDuck
+// ============================================================================
+// cubo_semantico.hpp
+// Fase 3: análisis semántico (también lo usa la fase 4)
+//
+//   texto ─► scanner ─► tokens ─► parser ─► árbol ─► SEMÁNTICA ─► cuádruplos
+//
+// Qué hace:
+//   Define los tipos del lenguaje (int, float, bool, error) y los operadores
+//   (+ - * / > < =), y la tabla CUBO[izq][der][op] que dice qué tipo resulta de
+//   cada combinación, o ERROR si no se permite (p. ej. bool + int, int = float).
+//   También convierte tipos y operadores a texto para mensajes y cuádruplos.
+//
+// Papel en el proceso:
+//   Es la "regla" de compatibilidad de tipos. generador.hpp la consulta cada vez
+//   que genera una operación, una asignación, un PARAM o un RETURN.
+//   Los enums Tipo y Op se usan en todo el compilador.
+//   No depende de ningún otro archivo del proyecto.
+// ============================================================================
 
 #pragma once
 

@@ -1,9 +1,18 @@
+// ============================================================================
+// hash.hpp
+// Estructura de apoyo (Tarea 1). No es una fase.
 //
-//  hash.hpp
-//  Tarea1_A07192068
+//   Autora: Ana Karina Aramoni Ruiz, 28/09/2026 (Tarea1_A07192068)
 //
-//  Created by Ana Karina Aramoni Ruiz on 28/09/2026.
+// Qué hace:
+//   Tabla hash genérica Hash<K, V> (clave -> valor) con encadenamiento: put,
+//   find, contains, erase, forEach. Busca en O(1) en promedio.
 //
+// Papel en el proceso:
+//   Herramienta de las fases 3 y 4: tablas.hpp la usa para las tablas de
+//   variables y de funciones, y memoria.hpp para la tabla de constantes.
+//   No depende de ningún otro archivo del proyecto.
+// ============================================================================
 
 #pragma once
 #include <cstddef>// std::size_t
@@ -39,7 +48,22 @@ public:
         return nullptr;
     }
 
-    bool contains(const K& key) { return find(key) != nullptr; }
+    const V* find(const K& key) const {
+        const Bucket& bucket = buckets_[index_for(key)];
+        for (std::size_t i = 0; i < bucket.size(); ++i) {
+            if (bucket[i].first == key) return &bucket[i].second;
+        }
+        return nullptr;
+    }
+
+    bool contains(const K& key) const { return find(key) != nullptr; }
+
+    // Llama f(clave, valor) por cada par, sin orden particular
+    template <typename F>
+    void forEach(F f) const {
+        for (const Bucket& bucket : buckets_)
+            for (const auto& par : bucket) f(par.first, par.second);
+    }
 
     bool erase(const K& key) {
         Bucket& bucket = buckets_[index_for(key)];

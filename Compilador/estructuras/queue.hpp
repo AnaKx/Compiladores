@@ -1,9 +1,20 @@
+// ============================================================================
+// queue.hpp
+// Estructura de apoyo (Tarea 1). No es una fase.
 //
-//  queue.hpp
-//  Tarea1_A07192068
+//   Autora: Ana Karina Aramoni Ruiz, 28/09/2026 (Tarea1_A07192068)
 //
-//  Created by Ana Karina Aramoni Ruiz on 28/09/2026.
+// Qué hace:
+//   Fila genérica Queue<T> (FIFO: el primero que entra es el primero que sale),
+//   con un buffer circular que crece al doble: enqueue, dequeue, front, at.
 //
+// Papel en el proceso:
+//   Herramienta de la fase 4: cuadruplos.hpp guarda en ella los cuádruplos en
+//   orden de ejecución. at(i) se agregó para rellenar saltos pendientes e
+//   imprimir la fila.
+//   No depende de ningún otro archivo del proyecto.
+// ============================================================================
+
 #pragma once
 #include <stdexcept> // std::out_of_range
 #include <cstddef> // std::size_t

@@ -1,6 +1,22 @@
-// Gramática del lenguaje BabyDuck para ANTLR4.
-// Las reglas en minúsculas son del parser; las reglas en MAYÚSCULAS son tokens del scanner.
-// "ε" se escribe como una alternativa vacía.
+// ============================================================================
+// BabyDuck.g4
+// Fases 1 y 2: análisis léxico (scanner) y sintáctico (parser)
+//
+//   texto ─► SCANNER ─► tokens ─► PARSER ─► árbol ─► semántica ─► cuádruplos
+//
+// Qué hace:
+//   Define el lenguaje BabyDuck:
+//   - abajo (SCANNER): qué palabras existen (tokens) y cómo se escriben;
+//   - arriba (PARSER): en qué orden pueden ir esas palabras (reglas gramaticales).
+//
+// Papel en el proceso:
+//   No se compila directamente: ANTLR lo lee y genera en generated/ el scanner
+//   (BabyDuckLexer), el parser (BabyDuckParser) y el listener base
+//   (BabyDuckBaseListener). Cada regla de aquí se vuelve un método enterRegla /
+//   exitRegla, que es donde semantica.hpp y generador.hpp ponen sus puntos neurálgicos.
+//   Recibe: el texto del programa.  Entrega: tokens y el árbol sintáctico.
+//   Si cambias este archivo, `make` vuelve a correr ANTLR.
+// ============================================================================
 
 grammar BabyDuck;
 

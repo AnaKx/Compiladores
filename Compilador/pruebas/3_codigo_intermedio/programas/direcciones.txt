@@ -1,0 +1,49 @@
+program direcciones;
+var i, total : int;
+var x, prom : float;
+
+float media(a : int, b : float) [
+    var s : float;
+    var k : int;
+    {
+        s = a + b;
+        k = 0;
+        while (k < 2) do {
+            if (s > 10) {
+                s = s / 2;
+            } else {
+                s = s * 1.5;
+            };
+            k = k + 1;
+        };
+        return s;
+    }
+];
+
+int suma(n : int) [
+    {
+        if (n < 1) {
+            return 0;
+        };
+        return n + suma(n - 1);
+    }
+];
+
+void reporte(i : int, x : float) [
+    {
+        print("i =", i, "x =", x);
+    }
+];
+
+main {
+    i = 3;
+    x = -2.5;
+    total = suma(i) * 2;
+    prom = media(total, x) + -2.5;
+    while (media(i, prom) > 1.5) do {
+        prom = prom - 1;
+    };
+    reporte(total, prom);
+    print("fin", -i);
+}
+end

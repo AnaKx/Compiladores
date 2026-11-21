@@ -1,0 +1,56 @@
+--- Directorio de funciones ---
+Programa: control
+  Globales (3 int, 1 float, 0 bool):
+    i : int  -> 1000  [línea 2]
+    j : int  -> 1001  [línea 2]
+    n : int  -> 1002  [línea 2]
+    suma : float  -> 2000  [línea 3]
+  main: temporales (3 int, 3 float, 4 bool)
+  Función void muestra(int, float)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 1 float, 0 bool), temporales (0 int, 0 float, 1 bool)
+    a : int  -> 3000  [línea 5]
+    b : float  -> 4000  [línea 5]
+  Constantes:
+    8000 = 0
+    8001 = 2
+    8002 = 1
+    10000 = "negativa"
+--- Cuádruplos ---
+   0: (GOTO, _, _, 6)
+   1: (>, 3000, 8000, 7000)
+   2: (GOTOF, 7000, _, 5)
+   3: (print, _, _, 3000)
+   4: (print, _, _, 4000)
+   5: (ENDFUNC, _, _, _)
+   6: (read, _, _, 1002)
+   7: (=, 8000, _, 1000)
+   8: (=, 8000, _, 2000)
+   9: (<, 1000, 1002, 7000)
+  10: (GOTOF, 7000, _, 27)
+  11: (=, 8000, _, 1001)
+  12: (<, 1001, 1000, 7001)
+  13: (GOTOF, 7001, _, 24)
+  14: (>, 1001, 8001, 7002)
+  15: (GOTOF, 7002, _, 19)
+  16: (+, 2000, 1001, 6000)
+  17: (=, 6000, _, 2000)
+  18: (GOTO, _, _, 21)
+  19: (-, 2000, 8002, 6001)
+  20: (=, 6001, _, 2000)
+  21: (+, 1001, 8002, 5000)
+  22: (=, 5000, _, 1001)
+  23: (GOTO, _, _, 12)
+  24: (+, 1000, 8002, 5001)
+  25: (=, 5001, _, 1000)
+  26: (GOTO, _, _, 9)
+  27: (ERA, _, _, muestra)
+  28: (*, 1000, 8001, 5002)
+  29: (PARAM, 5002, _, 3000)
+  30: (/, 2000, 1002, 6002)
+  31: (PARAM, 6002, _, 4000)
+  32: (GOSUB, muestra, _, 1)
+  33: (<, 2000, 8000, 7003)
+  34: (GOTOF, 7003, _, 36)
+  35: (print, _, _, 10000)
+  36: (END, _, _, _)
+Programa aceptado.

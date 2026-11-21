@@ -1,0 +1,103 @@
+--- Directorio de funciones ---
+Programa: direcciones
+  Globales (3 int, 3 float, 0 bool):
+    i : int  -> 1000  [línea 2]
+    total : int  -> 1001  [línea 2]
+    x : float  -> 2000  [línea 3]
+    prom : float  -> 2001  [línea 3]
+    media (regreso) : float  -> 2002
+    suma (regreso) : int  -> 1002
+  main: temporales (3 int, 4 float, 1 bool)
+  Función float media(int, float)  [línea 5, inicia en cuádruplo 1]
+    locales (2 int, 2 float, 0 bool), temporales (1 int, 3 float, 2 bool)
+    a : int  -> 3000  [línea 5]
+    b : float  -> 4000  [línea 5]
+    s : float  -> 4001  [línea 6]
+    k : int  -> 3001  [línea 7]
+  Función int suma(int)  [línea 23, inicia en cuádruplo 18]
+    locales (1 int, 0 float, 0 bool), temporales (3 int, 0 float, 1 bool)
+    n : int  -> 3000  [línea 23]
+  Función void reporte(int, float)  [línea 32, inicia en cuádruplo 29]
+    locales (1 int, 1 float, 0 bool), temporales (0 int, 0 float, 0 bool)
+    i : int  -> 3000  [línea 32]
+    x : float  -> 4000  [línea 32]
+  Constantes:
+    8000 = 0
+    8001 = 2
+    8002 = 10
+    8003 = 1
+    8004 = 3
+    9000 = 1.5
+    9001 = -2.5
+    10000 = "i ="
+    10001 = "x ="
+    10002 = "fin"
+--- Cuádruplos ---
+   0: (GOTO, _, _, 34)
+   1: (+, 3000, 4000, 6000)
+   2: (=, 6000, _, 4001)
+   3: (=, 8000, _, 3001)
+   4: (<, 3001, 8001, 7000)
+   5: (GOTOF, 7000, _, 16)
+   6: (>, 4001, 8002, 7001)
+   7: (GOTOF, 7001, _, 11)
+   8: (/, 4001, 8001, 6001)
+   9: (=, 6001, _, 4001)
+  10: (GOTO, _, _, 13)
+  11: (*, 4001, 9000, 6002)
+  12: (=, 6002, _, 4001)
+  13: (+, 3001, 8003, 5000)
+  14: (=, 5000, _, 3001)
+  15: (GOTO, _, _, 4)
+  16: (RETURN, 4001, _, 2002)
+  17: (ENDFUNC, _, _, _)
+  18: (<, 3000, 8003, 7000)
+  19: (GOTOF, 7000, _, 21)
+  20: (RETURN, 8000, _, 1002)
+  21: (ERA, _, _, suma)
+  22: (-, 3000, 8003, 5000)
+  23: (PARAM, 5000, _, 3000)
+  24: (GOSUB, suma, _, 18)
+  25: (=, 1002, _, 5001)
+  26: (+, 3000, 5001, 5002)
+  27: (RETURN, 5002, _, 1002)
+  28: (ENDFUNC, _, _, _)
+  29: (print, _, _, 10000)
+  30: (print, _, _, 3000)
+  31: (print, _, _, 10001)
+  32: (print, _, _, 4000)
+  33: (ENDFUNC, _, _, _)
+  34: (=, 8004, _, 1000)
+  35: (=, 9001, _, 2000)
+  36: (ERA, _, _, suma)
+  37: (PARAM, 1000, _, 3000)
+  38: (GOSUB, suma, _, 18)
+  39: (=, 1002, _, 5000)
+  40: (*, 5000, 8001, 5001)
+  41: (=, 5001, _, 1001)
+  42: (ERA, _, _, media)
+  43: (PARAM, 1001, _, 3000)
+  44: (PARAM, 2000, _, 4000)
+  45: (GOSUB, media, _, 1)
+  46: (=, 2002, _, 6000)
+  47: (+, 6000, 9001, 6001)
+  48: (=, 6001, _, 2001)
+  49: (ERA, _, _, media)
+  50: (PARAM, 1000, _, 3000)
+  51: (PARAM, 2001, _, 4000)
+  52: (GOSUB, media, _, 1)
+  53: (=, 2002, _, 6002)
+  54: (>, 6002, 9000, 7000)
+  55: (GOTOF, 7000, _, 59)
+  56: (-, 2001, 8003, 6003)
+  57: (=, 6003, _, 2001)
+  58: (GOTO, _, _, 49)
+  59: (ERA, _, _, reporte)
+  60: (PARAM, 1001, _, 3000)
+  61: (PARAM, 2001, _, 4000)
+  62: (GOSUB, reporte, _, 29)
+  63: (print, _, _, 10002)
+  64: (NEG, 1000, _, 5002)
+  65: (print, _, _, 5002)
+  66: (END, _, _, _)
+Programa aceptado.

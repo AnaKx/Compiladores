@@ -1,0 +1,28 @@
+--- Directorio de funciones ---
+Programa: llamadas
+  Globales (1 int, 1 float, 0 bool):
+    x : int  -> 1000  [línea 2]
+    y : float  -> 2000  [línea 3]
+  main: temporales (3 int, 0 float, 0 bool)
+  Función void doble(int)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 1 float, 0 bool), temporales (1 int, 0 float, 0 bool)
+    n : int  -> 3000  [línea 5]
+    x : float  -> 4000  [línea 6]
+  Constantes:
+    8000 = 2
+    8001 = 1
+--- Cuádruplos ---
+   0: (GOTO, _, _, 5)
+   1: (*, 3000, 8000, 5000)
+   2: (=, 5000, _, 4000)
+   3: (=, 4000, _, 2000)
+   4: (ENDFUNC, _, _, _)
+   5: (ERA, _, _, doble)
+   6: (+, 1000, 8001, 5000)
+   7: (*, 1000, 5000, 5001)
+   8: (PARAM, 5001, _, 3000)
+   9: (GOSUB, doble, _, 1)
+  10: (/, 1000, 8000, 5002)
+  11: (=, 5002, _, 2000)
+  12: (END, _, _, _)
+Programa aceptado.

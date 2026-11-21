@@ -1,15 +1,25 @@
-// Pilas y Fila para la generación de código intermedio (cuádruplos) de BabyDuck.
+// ============================================================================
+// cuadruplos.hpp
+// Fase 4: código intermedio
 //
-// Usa las plantillas Stack (stack.hpp) y Queue (queue.hpp):
+//   texto ─► scanner ─► tokens ─► parser ─► árbol ─► semántica ─► CUÁDRUPLOS
 //
+// Qué hace:
+//   Define el Cuadruplo (op, izq, der, res) y agrupa en EstructurasCodigo todo lo
+//   que usa la traducción: pila de operadores, de operandos, de tipos, de saltos
+//   pendientes y la fila de cuádruplos generados.
+//
+// Papel en el proceso:
+//   Es la "mesa de trabajo" de generador.hpp: ahí se apilan operandos y
+//   operadores mientras se traduce, y ahí queda la fila final de cuádruplos que
+//   imprime --cuadruplos.
+//   Usa: stack.hpp, queue.hpp, cubo_semantico.hpp.
 //   POper  : Stack<Op>           operadores pendientes (+ - * / > < =) y fondo falso '('
-//   PilaO  : Stack<std::string>  operandos (nombre de variable, constante o temporal)
+//   PilaO  : Stack<int>          operandos: dirección virtual de la variable, constante o temporal
 //   PTipos : Stack<Tipo>         tipo de cada operando de PilaO (van en paralelo)
 //   PSaltos: Stack<size_t>       cuádruplos con salto pendiente y puntos de regreso
 //   Quads  : Queue<Cuadruplo>    cuádruplos generados, en orden de ejecución
-//
-// La fila se llena por el final (FIFO); además Queue::at permite acceso por
-// posición para "rellenar" el destino de un salto (GOTOF/GOTO) cuando ya se conoce.
+// ============================================================================
 
 #pragma once
 
@@ -31,8 +41,10 @@ T sacar(Stack<T>& pila) {
     return valor;
 }
 
-// Cuadruplo: (operador, operando izquierdo, operando derecho, resultado).
-// Los campos que no se usan quedan vacíos (se imprimen como "_").
+// Cuadruplo: (operador, operando izquierdo, operando derecho, resultado)
+// Los campos que no se usan quedan vacíos (se imprimen como "_")
+// Se guardan como texto para que ERA/GOSUB puedan llevar el nombre de la funcion;
+// los demes campos son direcciones o numeros de cuadruplo
 struct Cuadruplo {
     std::string op;
     std::string izq;
@@ -43,20 +55,20 @@ struct Cuadruplo {
 // Conjunto de estructuras que usan los puntos neuralgicos de expresiones y estatutos
 struct EstructurasCodigo {
     Stack<Op> poper;
-    Stack<std::string> pilaO;
+    Stack<int> pilaO;
     Stack<Tipo> ptipos;
     Stack<std::size_t> psaltos;
     Queue<Cuadruplo> cuadruplos;
 
     // Un operando siempre entra y sale junto con su tipo
-    void pushOperando(const std::string& nombre, Tipo tipo) {
-        pilaO.push(nombre);
+    void pushOperando(int direccion, Tipo tipo) {
+        pilaO.push(direccion);
         ptipos.push(tipo);
     }
 
-    std::pair<std::string, Tipo> popOperando() {
-        std::string nombre = sacar(pilaO);
-        return {nombre, sacar(ptipos)};
+    std::pair<int, Tipo> popOperando() {
+        int direccion = sacar(pilaO);
+        return {direccion, sacar(ptipos)};
     }
 
     // Genera un cuadruplo y regresa su indice (el "contador" de cuadruplos)
@@ -66,7 +78,7 @@ struct EstructurasCodigo {
         return cuadruplos.size() - 1;
     }
 
-    // Indice que tendrq el siguiente cuadruplo
+    // Indice que tendra el siguiente cuadruplo
     std::size_t siguiente() const { return cuadruplos.size(); }
 
     // Pone el destino de un salto ya generado

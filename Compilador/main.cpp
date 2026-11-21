@@ -1,15 +1,23 @@
-// Programa principal: corre el scanner, el parser y el análisis semántico
-// (directorio de funciones y tablas de variables) y la generación de cuádruplos
-// sobre un archivo fuente.
+// ============================================================================
+// main.cpp
+// Punto de entrada: dirige todas las fases
 //
-// Uso:
-//   ./compilador archivo.txt            revisa el programa
-//   ./compilador --tokens archivo.txt   además imprime la lista de tokens
-//   ./compilador --tree archivo.txt     además imprime el árbol sintáctico
-//   ./compilador --tablas archivo.txt   además imprime el directorio de funciones
-//   ./compilador --cuadruplos archivo.txt  además imprime los cuádruplos generados
+//   texto ─► SCANNER ─► tokens ─► PARSER ─► árbol ─► SEMÁNTICA ─► CUÁDRUPLOS
 //
-// Regresa 0 si el programa es válido y 1 si hubo errores.
+// Qué hace:
+//   Lee las opciones y el archivo fuente y corre las fases en orden:
+//   1) scanner (BabyDuckLexer), 2) parser (BabyDuckParser), y si no hubo errores
+//   3-4) recorre el árbol con GeneradorCuadruplos (semántica + cuádruplos).
+//   Junta los errores de todas las fases.
+//
+// Papel en el proceso:
+//   Recibe: la ruta de un programa BabyDuck y opciones de impresión.
+//   Entrega: "Programa aceptado" (regresa 0) o los errores y "Programa rechazado"
+//   (regresa 1). Con --tokens, --tree, --tablas y --cuadruplos imprime el
+//   resultado de cada fase.
+//   Usa: el código que genera ANTLR (generated/) y generador.hpp, que incluye
+//   todo lo demás.
+// ============================================================================
 
 #include <fstream>
 #include <iostream>

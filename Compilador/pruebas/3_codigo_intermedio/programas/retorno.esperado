@@ -1,0 +1,74 @@
+--- Directorio de funciones ---
+Programa: retorno
+  Globales (3 int, 2 float, 0 bool):
+    n : int  -> 1000  [línea 2]
+    r : int  -> 1001  [línea 2]
+    p : float  -> 2000  [línea 3]
+    factorial (regreso) : int  -> 1002
+    promedio (regreso) : float  -> 2001
+  main: temporales (3 int, 2 float, 0 bool)
+  Función int factorial(int)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 0 float, 0 bool), temporales (3 int, 0 float, 1 bool)
+    k : int  -> 3000  [línea 5]
+  Función float promedio(int, int)  [línea 14, inicia en cuádruplo 12]
+    locales (3 int, 0 float, 0 bool), temporales (1 int, 1 float, 0 bool)
+    a : int  -> 3000  [línea 14]
+    b : int  -> 3001  [línea 14]
+    s : int  -> 3002  [línea 15]
+  Función void muestra(int)  [línea 22, inicia en cuádruplo 17]
+    locales (1 int, 0 float, 0 bool), temporales (0 int, 0 float, 0 bool)
+    x : int  -> 3000  [línea 22]
+  Constantes:
+    8000 = 2
+    8001 = 1
+    8002 = 3
+    8003 = 4
+    9000 = 2.0
+    10000 = "valor:"
+--- Cuádruplos ---
+   0: (GOTO, _, _, 20)
+   1: (<, 3000, 8000, 7000)
+   2: (GOTOF, 7000, _, 4)
+   3: (RETURN, 8001, _, 1002)
+   4: (ERA, _, _, factorial)
+   5: (-, 3000, 8001, 5000)
+   6: (PARAM, 5000, _, 3000)
+   7: (GOSUB, factorial, _, 1)
+   8: (=, 1002, _, 5001)
+   9: (*, 3000, 5001, 5002)
+  10: (RETURN, 5002, _, 1002)
+  11: (ENDFUNC, _, _, _)
+  12: (+, 3000, 3001, 5000)
+  13: (=, 5000, _, 3002)
+  14: (/, 3002, 9000, 6000)
+  15: (RETURN, 6000, _, 2001)
+  16: (ENDFUNC, _, _, _)
+  17: (print, _, _, 10000)
+  18: (print, _, _, 3000)
+  19: (ENDFUNC, _, _, _)
+  20: (read, _, _, 1000)
+  21: (ERA, _, _, factorial)
+  22: (PARAM, 1000, _, 3000)
+  23: (GOSUB, factorial, _, 1)
+  24: (=, 1002, _, 5000)
+  25: (+, 5000, 8001, 5001)
+  26: (=, 5001, _, 1001)
+  27: (ERA, _, _, promedio)
+  28: (PARAM, 1000, _, 3000)
+  29: (PARAM, 1001, _, 3001)
+  30: (GOSUB, promedio, _, 12)
+  31: (=, 2001, _, 6000)
+  32: (*, 6000, 8000, 6001)
+  33: (=, 6001, _, 2000)
+  34: (ERA, _, _, muestra)
+  35: (ERA, _, _, factorial)
+  36: (PARAM, 8002, _, 3000)
+  37: (GOSUB, factorial, _, 1)
+  38: (=, 1002, _, 5002)
+  39: (PARAM, 5002, _, 3000)
+  40: (GOSUB, muestra, _, 17)
+  41: (ERA, _, _, factorial)
+  42: (PARAM, 8003, _, 3000)
+  43: (GOSUB, factorial, _, 1)
+  44: (END, _, _, _)
+Programa aceptado.

@@ -1,9 +1,19 @@
+// ============================================================================
+// stack.hpp
+// Estructura de apoyo (Tarea 1). No es una fase.
 //
-//  stack.hpp
-//  Tarea1_A07192068
+//   Autora: Ana Karina Aramoni Ruiz, 28/09/2026 (Tarea1_A07192068)
 //
-//  Created by Ana Karina Aramoni Ruiz on 28/09/2026.
+// Qué hace:
+//   Pila genérica Stack<T> (LIFO: el último que entra es el primero que sale),
+//   guardada en un std::vector: push, pop, top, empty, size, clear.
 //
+// Papel en el proceso:
+//   Herramienta de la fase 4: cuadruplos.hpp la usa para la pila de operadores,
+//   de operandos, de tipos y de saltos pendientes, y generador.hpp para las
+//   llamadas a función abiertas.
+//   No depende de ningún otro archivo del proyecto.
+// ============================================================================
 
 #pragma once
 #include <cstddef> // std::size_t

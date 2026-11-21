@@ -30,29 +30,50 @@
     27	}
     28	end
 
+--- Directorio de funciones ---
+Programa: ambitos
+  Globales (2 int, 1 float, 0 bool):
+    x : int  -> 1000  [línea 2]
+    total : int  -> 1001  [línea 2]
+    y : float  -> 2000  [línea 3]
+  main: temporales (0 int, 0 float, 0 bool)
+  Función void uno(float)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 1 float, 0 bool), temporales (0 int, 1 float, 0 bool)
+    x : float  -> 4000  [línea 5]
+    t : int  -> 3000  [línea 6]
+  Función void dos(int, float)  [línea 14, inicia en cuádruplo 6]
+    locales (2 int, 1 float, 0 bool), temporales (0 int, 1 float, 0 bool)
+    a : int  -> 3000  [línea 14]
+    b : float  -> 4000  [línea 14]
+    x : int  -> 3001  [línea 15]
+  Constantes:
+    8000 = 1
+    8001 = 3
+    9000 = 2.0
+    9001 = 1.0
 --- Cuádruplos ---
    0: (GOTO, _, _, 16)
-   1: (=, 1, _, t)
-   2: (*, x, 2.0, _t1)
-   3: (=, _t1, _, y)
-   4: (=, t, _, total)
+   1: (=, 8000, _, 3000)
+   2: (*, 4000, 9000, 6000)
+   3: (=, 6000, _, 2000)
+   4: (=, 3000, _, 1001)
    5: (ENDFUNC, _, _, _)
-   6: (=, a, _, x)
+   6: (=, 3000, _, 3001)
    7: (ERA, _, _, uno)
-   8: (PARAM, b, _, par1)
+   8: (PARAM, 4000, _, 4000)
    9: (GOSUB, uno, _, 1)
   10: (ERA, _, _, dos)
-  11: (PARAM, x, _, par1)
-  12: (+, b, 1.0, _t2)
-  13: (PARAM, _t2, _, par2)
+  11: (PARAM, 3001, _, 3000)
+  12: (+, 4000, 9001, 6000)
+  13: (PARAM, 6000, _, 4000)
   14: (GOSUB, dos, _, 6)
   15: (ENDFUNC, _, _, _)
-  16: (=, 3, _, x)
+  16: (=, 8001, _, 1000)
   17: (ERA, _, _, dos)
-  18: (PARAM, x, _, par1)
-  19: (PARAM, y, _, par2)
+  18: (PARAM, 1000, _, 3000)
+  19: (PARAM, 2000, _, 4000)
   20: (GOSUB, dos, _, 6)
-  21: (read, _, _, total)
+  21: (read, _, _, 1001)
   22: (END, _, _, _)
 Programa aceptado.
 
@@ -90,36 +111,56 @@ Programa aceptado.
     29	}
     30	end
 
+--- Directorio de funciones ---
+Programa: demo
+  Globales (2 int, 1 float, 0 bool):
+    i : int  -> 1000  [línea 2]
+    n : int  -> 1001  [línea 2]
+    prom : float  -> 2000  [línea 3]
+  main: temporales (3 int, 2 float, 2 bool)
+  Función void imprimeSuma(int, int)  [línea 5, inicia en cuádruplo 1]
+    locales (3 int, 0 float, 0 bool), temporales (1 int, 0 float, 0 bool)
+    a : int  -> 3000  [línea 5]
+    b : int  -> 3001  [línea 5]
+    s : int  -> 3002  [línea 6]
+  Constantes:
+    8000 = 0
+    8001 = 1
+    8002 = 2
+    9000 = -3.5
+    10000 = "suma:"
+    10001 = "error"
+    10002 = "ok"
 --- Cuádruplos ---
    0: (GOTO, _, _, 6)
-   1: (+, a, b, _t1)
-   2: (=, _t1, _, s)
-   3: (print, _, _, "suma:")
-   4: (print, _, _, s)
+   1: (+, 3000, 3001, 5000)
+   2: (=, 5000, _, 3002)
+   3: (print, _, _, 10000)
+   4: (print, _, _, 3002)
    5: (ENDFUNC, _, _, _)
-   6: (read, _, _, n)
-   7: (=, 0, _, i)
-   8: (<, i, n, _t2)
-   9: (GOTOF, _t2, _, 13)
-  10: (+, i, 1, _t3)
-  11: (=, _t3, _, i)
+   6: (read, _, _, 1001)
+   7: (=, 8000, _, 1000)
+   8: (<, 1000, 1001, 7000)
+   9: (GOTOF, 7000, _, 13)
+  10: (+, 1000, 8001, 5000)
+  11: (=, 5000, _, 1000)
   12: (GOTO, _, _, 8)
-  13: (<, i, n, _t4)
-  14: (GOTOF, _t4, _, 17)
-  15: (print, _, _, "error")
+  13: (<, 1000, 1001, 7001)
+  14: (GOTOF, 7001, _, 17)
+  15: (print, _, _, 10001)
   16: (GOTO, _, _, 20)
-  17: (print, _, _, "ok")
-  18: (*, i, 2, _t5)
-  19: (print, _, _, _t5)
-  20: (+, i, 1, _t6)
-  21: (*, -3.5, _t6, _t7)
-  22: (/, _t7, 2, _t8)
-  23: (=, _t8, _, prom)
+  17: (print, _, _, 10002)
+  18: (*, 1000, 8002, 5001)
+  19: (print, _, _, 5001)
+  20: (+, 1000, 8001, 5002)
+  21: (*, 9000, 5002, 6000)
+  22: (/, 6000, 8002, 6001)
+  23: (=, 6001, _, 2000)
   24: (ERA, _, _, imprimeSuma)
-  25: (PARAM, i, _, par1)
-  26: (PARAM, n, _, par2)
+  25: (PARAM, 1000, _, 3000)
+  26: (PARAM, 1001, _, 3001)
   27: (GOSUB, imprimeSuma, _, 1)
-  28: (print, _, _, prom)
+  28: (print, _, _, 2000)
   29: (END, _, _, _)
 Programa aceptado.
 
@@ -130,13 +171,20 @@ Programa aceptado.
      2	main { }
      3	end
 
+--- Directorio de funciones ---
+Programa: vacio
+  Globales (0 int, 0 float, 0 bool):
+    (vacía)
+  main: temporales (0 int, 0 float, 0 bool)
+  Constantes:
+    (vacía)
 --- Cuádruplos ---
    0: (GOTO, _, _, 1)
    1: (END, _, _, _)
 Programa aceptado.
 
 ==================================================================
- pruebas/cuadruplos/control.txt
+ pruebas/3_codigo_intermedio/programas/control.txt
 ==================================================================
      1	program control;
      2	var i, j, n : int;
@@ -173,48 +221,222 @@ Programa aceptado.
     33	}
     34	end
 
+--- Directorio de funciones ---
+Programa: control
+  Globales (3 int, 1 float, 0 bool):
+    i : int  -> 1000  [línea 2]
+    j : int  -> 1001  [línea 2]
+    n : int  -> 1002  [línea 2]
+    suma : float  -> 2000  [línea 3]
+  main: temporales (3 int, 3 float, 4 bool)
+  Función void muestra(int, float)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 1 float, 0 bool), temporales (0 int, 0 float, 1 bool)
+    a : int  -> 3000  [línea 5]
+    b : float  -> 4000  [línea 5]
+  Constantes:
+    8000 = 0
+    8001 = 2
+    8002 = 1
+    10000 = "negativa"
 --- Cuádruplos ---
    0: (GOTO, _, _, 6)
-   1: (>, a, 0, _t1)
-   2: (GOTOF, _t1, _, 5)
-   3: (print, _, _, a)
-   4: (print, _, _, b)
+   1: (>, 3000, 8000, 7000)
+   2: (GOTOF, 7000, _, 5)
+   3: (print, _, _, 3000)
+   4: (print, _, _, 4000)
    5: (ENDFUNC, _, _, _)
-   6: (read, _, _, n)
-   7: (=, 0, _, i)
-   8: (=, 0, _, suma)
-   9: (<, i, n, _t2)
-  10: (GOTOF, _t2, _, 27)
-  11: (=, 0, _, j)
-  12: (<, j, i, _t3)
-  13: (GOTOF, _t3, _, 24)
-  14: (>, j, 2, _t4)
-  15: (GOTOF, _t4, _, 19)
-  16: (+, suma, j, _t5)
-  17: (=, _t5, _, suma)
+   6: (read, _, _, 1002)
+   7: (=, 8000, _, 1000)
+   8: (=, 8000, _, 2000)
+   9: (<, 1000, 1002, 7000)
+  10: (GOTOF, 7000, _, 27)
+  11: (=, 8000, _, 1001)
+  12: (<, 1001, 1000, 7001)
+  13: (GOTOF, 7001, _, 24)
+  14: (>, 1001, 8001, 7002)
+  15: (GOTOF, 7002, _, 19)
+  16: (+, 2000, 1001, 6000)
+  17: (=, 6000, _, 2000)
   18: (GOTO, _, _, 21)
-  19: (-, suma, 1, _t6)
-  20: (=, _t6, _, suma)
-  21: (+, j, 1, _t7)
-  22: (=, _t7, _, j)
+  19: (-, 2000, 8002, 6001)
+  20: (=, 6001, _, 2000)
+  21: (+, 1001, 8002, 5000)
+  22: (=, 5000, _, 1001)
   23: (GOTO, _, _, 12)
-  24: (+, i, 1, _t8)
-  25: (=, _t8, _, i)
+  24: (+, 1000, 8002, 5001)
+  25: (=, 5001, _, 1000)
   26: (GOTO, _, _, 9)
   27: (ERA, _, _, muestra)
-  28: (*, i, 2, _t9)
-  29: (PARAM, _t9, _, par1)
-  30: (/, suma, n, _t10)
-  31: (PARAM, _t10, _, par2)
+  28: (*, 1000, 8001, 5002)
+  29: (PARAM, 5002, _, 3000)
+  30: (/, 2000, 1002, 6002)
+  31: (PARAM, 6002, _, 4000)
   32: (GOSUB, muestra, _, 1)
-  33: (<, suma, 0, _t11)
-  34: (GOTOF, _t11, _, 36)
-  35: (print, _, _, "negativa")
+  33: (<, 2000, 8000, 7003)
+  34: (GOTOF, 7003, _, 36)
+  35: (print, _, _, 10000)
   36: (END, _, _, _)
 Programa aceptado.
 
 ==================================================================
- pruebas/cuadruplos/lineales.txt
+ pruebas/3_codigo_intermedio/programas/direcciones.txt
+==================================================================
+     1	program direcciones;
+     2	var i, total : int;
+     3	var x, prom : float;
+     4	
+     5	float media(a : int, b : float) [
+     6	    var s : float;
+     7	    var k : int;
+     8	    {
+     9	        s = a + b;
+    10	        k = 0;
+    11	        while (k < 2) do {
+    12	            if (s > 10) {
+    13	                s = s / 2;
+    14	            } else {
+    15	                s = s * 1.5;
+    16	            };
+    17	            k = k + 1;
+    18	        };
+    19	        return s;
+    20	    }
+    21	];
+    22	
+    23	int suma(n : int) [
+    24	    {
+    25	        if (n < 1) {
+    26	            return 0;
+    27	        };
+    28	        return n + suma(n - 1);
+    29	    }
+    30	];
+    31	
+    32	void reporte(i : int, x : float) [
+    33	    {
+    34	        print("i =", i, "x =", x);
+    35	    }
+    36	];
+    37	
+    38	main {
+    39	    i = 3;
+    40	    x = -2.5;
+    41	    total = suma(i) * 2;
+    42	    prom = media(total, x) + -2.5;
+    43	    while (media(i, prom) > 1.5) do {
+    44	        prom = prom - 1;
+    45	    };
+    46	    reporte(total, prom);
+    47	    print("fin", -i);
+    48	}
+    49	end
+
+--- Directorio de funciones ---
+Programa: direcciones
+  Globales (3 int, 3 float, 0 bool):
+    i : int  -> 1000  [línea 2]
+    total : int  -> 1001  [línea 2]
+    x : float  -> 2000  [línea 3]
+    prom : float  -> 2001  [línea 3]
+    media (regreso) : float  -> 2002
+    suma (regreso) : int  -> 1002
+  main: temporales (3 int, 4 float, 1 bool)
+  Función float media(int, float)  [línea 5, inicia en cuádruplo 1]
+    locales (2 int, 2 float, 0 bool), temporales (1 int, 3 float, 2 bool)
+    a : int  -> 3000  [línea 5]
+    b : float  -> 4000  [línea 5]
+    s : float  -> 4001  [línea 6]
+    k : int  -> 3001  [línea 7]
+  Función int suma(int)  [línea 23, inicia en cuádruplo 18]
+    locales (1 int, 0 float, 0 bool), temporales (3 int, 0 float, 1 bool)
+    n : int  -> 3000  [línea 23]
+  Función void reporte(int, float)  [línea 32, inicia en cuádruplo 29]
+    locales (1 int, 1 float, 0 bool), temporales (0 int, 0 float, 0 bool)
+    i : int  -> 3000  [línea 32]
+    x : float  -> 4000  [línea 32]
+  Constantes:
+    8000 = 0
+    8001 = 2
+    8002 = 10
+    8003 = 1
+    8004 = 3
+    9000 = 1.5
+    9001 = -2.5
+    10000 = "i ="
+    10001 = "x ="
+    10002 = "fin"
+--- Cuádruplos ---
+   0: (GOTO, _, _, 34)
+   1: (+, 3000, 4000, 6000)
+   2: (=, 6000, _, 4001)
+   3: (=, 8000, _, 3001)
+   4: (<, 3001, 8001, 7000)
+   5: (GOTOF, 7000, _, 16)
+   6: (>, 4001, 8002, 7001)
+   7: (GOTOF, 7001, _, 11)
+   8: (/, 4001, 8001, 6001)
+   9: (=, 6001, _, 4001)
+  10: (GOTO, _, _, 13)
+  11: (*, 4001, 9000, 6002)
+  12: (=, 6002, _, 4001)
+  13: (+, 3001, 8003, 5000)
+  14: (=, 5000, _, 3001)
+  15: (GOTO, _, _, 4)
+  16: (RETURN, 4001, _, 2002)
+  17: (ENDFUNC, _, _, _)
+  18: (<, 3000, 8003, 7000)
+  19: (GOTOF, 7000, _, 21)
+  20: (RETURN, 8000, _, 1002)
+  21: (ERA, _, _, suma)
+  22: (-, 3000, 8003, 5000)
+  23: (PARAM, 5000, _, 3000)
+  24: (GOSUB, suma, _, 18)
+  25: (=, 1002, _, 5001)
+  26: (+, 3000, 5001, 5002)
+  27: (RETURN, 5002, _, 1002)
+  28: (ENDFUNC, _, _, _)
+  29: (print, _, _, 10000)
+  30: (print, _, _, 3000)
+  31: (print, _, _, 10001)
+  32: (print, _, _, 4000)
+  33: (ENDFUNC, _, _, _)
+  34: (=, 8004, _, 1000)
+  35: (=, 9001, _, 2000)
+  36: (ERA, _, _, suma)
+  37: (PARAM, 1000, _, 3000)
+  38: (GOSUB, suma, _, 18)
+  39: (=, 1002, _, 5000)
+  40: (*, 5000, 8001, 5001)
+  41: (=, 5001, _, 1001)
+  42: (ERA, _, _, media)
+  43: (PARAM, 1001, _, 3000)
+  44: (PARAM, 2000, _, 4000)
+  45: (GOSUB, media, _, 1)
+  46: (=, 2002, _, 6000)
+  47: (+, 6000, 9001, 6001)
+  48: (=, 6001, _, 2001)
+  49: (ERA, _, _, media)
+  50: (PARAM, 1000, _, 3000)
+  51: (PARAM, 2001, _, 4000)
+  52: (GOSUB, media, _, 1)
+  53: (=, 2002, _, 6002)
+  54: (>, 6002, 9000, 7000)
+  55: (GOTOF, 7000, _, 59)
+  56: (-, 2001, 8003, 6003)
+  57: (=, 6003, _, 2001)
+  58: (GOTO, _, _, 49)
+  59: (ERA, _, _, reporte)
+  60: (PARAM, 1001, _, 3000)
+  61: (PARAM, 2001, _, 4000)
+  62: (GOSUB, reporte, _, 29)
+  63: (print, _, _, 10002)
+  64: (NEG, 1000, _, 5002)
+  65: (print, _, _, 5002)
+  66: (END, _, _, _)
+Programa aceptado.
+
+==================================================================
+ pruebas/3_codigo_intermedio/programas/lineales.txt
 ==================================================================
      1	program lineales;
      2	var base, altura, n1, n2, n3 : int;
@@ -239,51 +461,78 @@ Programa aceptado.
     21	}
     22	end
 
+--- Directorio de funciones ---
+Programa: lineales
+  Globales (5 int, 4 float, 0 bool):
+    base : int  -> 1000  [línea 2]
+    altura : int  -> 1001  [línea 2]
+    n1 : int  -> 1002  [línea 2]
+    n2 : int  -> 1003  [línea 2]
+    n3 : int  -> 1004  [línea 2]
+    area : float  -> 2000  [línea 3]
+    prom : float  -> 2001  [línea 3]
+    celsius : float  -> 2002  [línea 3]
+    fahr : float  -> 2003  [línea 3]
+  main: temporales (11 int, 4 float, 2 bool)
+  Constantes:
+    8000 = 2
+    8001 = 70
+    8002 = 9
+    8003 = 5
+    8004 = 32
+    8005 = 1
+    8006 = -1
+    9000 = 3.0
+    10000 = "area:"
+    10001 = "promedio:"
+    10002 = "mayor a 70:"
+    10003 = "C ="
+    10004 = "F"
 --- Cuádruplos ---
    0: (GOTO, _, _, 1)
-   1: (read, _, _, base)
-   2: (read, _, _, altura)
-   3: (*, base, altura, _t1)
-   4: (/, _t1, 2, _t2)
-   5: (=, _t2, _, area)
-   6: (print, _, _, "area:")
-   7: (print, _, _, area)
-   8: (read, _, _, n1)
-   9: (read, _, _, n2)
-  10: (read, _, _, n3)
-  11: (+, n1, n2, _t3)
-  12: (+, _t3, n3, _t4)
-  13: (/, _t4, 3.0, _t5)
-  14: (=, _t5, _, prom)
-  15: (print, _, _, "promedio:")
-  16: (print, _, _, prom)
-  17: (print, _, _, "mayor a 70:")
-  18: (>, prom, 70, _t6)
-  19: (print, _, _, _t6)
-  20: (read, _, _, celsius)
-  21: (*, celsius, 9, _t7)
-  22: (/, _t7, 5, _t8)
-  23: (+, _t8, 32, _t9)
-  24: (=, _t9, _, fahr)
-  25: (print, _, _, celsius)
-  26: (print, _, _, "C =")
-  27: (print, _, _, fahr)
-  28: (print, _, _, "F")
-  29: (NEG, n2, _, _t10)
-  30: (*, n1, 2, _t11)
-  31: (-, _t11, 1, _t12)
-  32: (-, n3, _t12, _t13)
-  33: (*, _t13, -1, _t14)
-  34: (+, _t10, _t14, _t15)
-  35: (=, _t15, _, n1)
-  36: (NEG, n3, _, _t16)
-  37: (<, n1, _t16, _t17)
-  38: (print, _, _, _t17)
+   1: (read, _, _, 1000)
+   2: (read, _, _, 1001)
+   3: (*, 1000, 1001, 5000)
+   4: (/, 5000, 8000, 5001)
+   5: (=, 5001, _, 2000)
+   6: (print, _, _, 10000)
+   7: (print, _, _, 2000)
+   8: (read, _, _, 1002)
+   9: (read, _, _, 1003)
+  10: (read, _, _, 1004)
+  11: (+, 1002, 1003, 5002)
+  12: (+, 5002, 1004, 5003)
+  13: (/, 5003, 9000, 6000)
+  14: (=, 6000, _, 2001)
+  15: (print, _, _, 10001)
+  16: (print, _, _, 2001)
+  17: (print, _, _, 10002)
+  18: (>, 2001, 8001, 7000)
+  19: (print, _, _, 7000)
+  20: (read, _, _, 2002)
+  21: (*, 2002, 8002, 6001)
+  22: (/, 6001, 8003, 6002)
+  23: (+, 6002, 8004, 6003)
+  24: (=, 6003, _, 2003)
+  25: (print, _, _, 2002)
+  26: (print, _, _, 10003)
+  27: (print, _, _, 2003)
+  28: (print, _, _, 10004)
+  29: (NEG, 1003, _, 5004)
+  30: (*, 1002, 8000, 5005)
+  31: (-, 5005, 8005, 5006)
+  32: (-, 1004, 5006, 5007)
+  33: (*, 5007, 8006, 5008)
+  34: (+, 5004, 5008, 5009)
+  35: (=, 5009, _, 1002)
+  36: (NEG, 1004, _, 5010)
+  37: (<, 1002, 5010, 7001)
+  38: (print, _, _, 7001)
   39: (END, _, _, _)
 Programa aceptado.
 
 ==================================================================
- pruebas/cuadruplos/llamadas_y_ambitos.txt
+ pruebas/3_codigo_intermedio/programas/llamadas_y_ambitos.txt
 ==================================================================
      1	program llamadas;
      2	var x : int;
@@ -303,24 +552,37 @@ Programa aceptado.
     16	}
     17	end
 
+--- Directorio de funciones ---
+Programa: llamadas
+  Globales (1 int, 1 float, 0 bool):
+    x : int  -> 1000  [línea 2]
+    y : float  -> 2000  [línea 3]
+  main: temporales (3 int, 0 float, 0 bool)
+  Función void doble(int)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 1 float, 0 bool), temporales (1 int, 0 float, 0 bool)
+    n : int  -> 3000  [línea 5]
+    x : float  -> 4000  [línea 6]
+  Constantes:
+    8000 = 2
+    8001 = 1
 --- Cuádruplos ---
    0: (GOTO, _, _, 5)
-   1: (*, n, 2, _t1)
-   2: (=, _t1, _, x)
-   3: (=, x, _, y)
+   1: (*, 3000, 8000, 5000)
+   2: (=, 5000, _, 4000)
+   3: (=, 4000, _, 2000)
    4: (ENDFUNC, _, _, _)
    5: (ERA, _, _, doble)
-   6: (+, x, 1, _t2)
-   7: (*, x, _t2, _t3)
-   8: (PARAM, _t3, _, par1)
+   6: (+, 1000, 8001, 5000)
+   7: (*, 1000, 5000, 5001)
+   8: (PARAM, 5001, _, 3000)
    9: (GOSUB, doble, _, 1)
-  10: (/, x, 2, _t4)
-  11: (=, _t4, _, y)
+  10: (/, 1000, 8000, 5002)
+  11: (=, 5002, _, 2000)
   12: (END, _, _, _)
 Programa aceptado.
 
 ==================================================================
- pruebas/cuadruplos/precedencia.txt
+ pruebas/3_codigo_intermedio/programas/precedencia.txt
 ==================================================================
      1	program precedencia;
      2	var a, b, c, d : int;
@@ -337,35 +599,48 @@ Programa aceptado.
     13	}
     14	end
 
+--- Directorio de funciones ---
+Programa: precedencia
+  Globales (4 int, 1 float, 0 bool):
+    a : int  -> 1000  [línea 2]
+    b : int  -> 1001  [línea 2]
+    c : int  -> 1002  [línea 2]
+    d : int  -> 1003  [línea 2]
+    f : float  -> 2000  [línea 3]
+  main: temporales (11 int, 2 float, 1 bool)
+  Constantes:
+    8000 = 3
+    9000 = -2.5
+    10000 = "fin"
 --- Cuádruplos ---
    0: (GOTO, _, _, 1)
-   1: (*, c, d, _t1)
-   2: (+, b, _t1, _t2)
-   3: (=, _t2, _, a)
-   4: (+, b, c, _t3)
-   5: (*, _t3, d, _t4)
-   6: (=, _t4, _, a)
-   7: (-, b, c, _t5)
-   8: (-, _t5, d, _t6)
-   9: (=, _t6, _, a)
-  10: (/, b, c, _t7)
-  11: (*, _t7, d, _t8)
-  12: (=, _t8, _, a)
-  13: (NEG, a, _, _t9)
-  14: (*, 3, -2.5, _t10)
-  15: (+, _t9, _t10, _t11)
-  16: (=, _t11, _, f)
-  17: (+, a, b, _t12)
-  18: (*, c, d, _t13)
-  19: (>, _t12, _t13, _t14)
-  20: (print, _, _, _t14)
-  21: (print, _, _, "fin")
-  22: (read, _, _, f)
+   1: (*, 1002, 1003, 5000)
+   2: (+, 1001, 5000, 5001)
+   3: (=, 5001, _, 1000)
+   4: (+, 1001, 1002, 5002)
+   5: (*, 5002, 1003, 5003)
+   6: (=, 5003, _, 1000)
+   7: (-, 1001, 1002, 5004)
+   8: (-, 5004, 1003, 5005)
+   9: (=, 5005, _, 1000)
+  10: (/, 1001, 1002, 5006)
+  11: (*, 5006, 1003, 5007)
+  12: (=, 5007, _, 1000)
+  13: (NEG, 1000, _, 5008)
+  14: (*, 8000, 9000, 6000)
+  15: (+, 5008, 6000, 6001)
+  16: (=, 6001, _, 2000)
+  17: (+, 1000, 1001, 5009)
+  18: (*, 1002, 1003, 5010)
+  19: (>, 5009, 5010, 7000)
+  20: (print, _, _, 7000)
+  21: (print, _, _, 10000)
+  22: (read, _, _, 2000)
   23: (END, _, _, _)
 Programa aceptado.
 
 ==================================================================
- pruebas/cuadruplos/retorno.txt
+ pruebas/3_codigo_intermedio/programas/retorno.txt
 ==================================================================
      1	program retorno;
      2	var n, r : int;
@@ -403,50 +678,77 @@ Programa aceptado.
     34	}
     35	end
 
+--- Directorio de funciones ---
+Programa: retorno
+  Globales (3 int, 2 float, 0 bool):
+    n : int  -> 1000  [línea 2]
+    r : int  -> 1001  [línea 2]
+    p : float  -> 2000  [línea 3]
+    factorial (regreso) : int  -> 1002
+    promedio (regreso) : float  -> 2001
+  main: temporales (3 int, 2 float, 0 bool)
+  Función int factorial(int)  [línea 5, inicia en cuádruplo 1]
+    locales (1 int, 0 float, 0 bool), temporales (3 int, 0 float, 1 bool)
+    k : int  -> 3000  [línea 5]
+  Función float promedio(int, int)  [línea 14, inicia en cuádruplo 12]
+    locales (3 int, 0 float, 0 bool), temporales (1 int, 1 float, 0 bool)
+    a : int  -> 3000  [línea 14]
+    b : int  -> 3001  [línea 14]
+    s : int  -> 3002  [línea 15]
+  Función void muestra(int)  [línea 22, inicia en cuádruplo 17]
+    locales (1 int, 0 float, 0 bool), temporales (0 int, 0 float, 0 bool)
+    x : int  -> 3000  [línea 22]
+  Constantes:
+    8000 = 2
+    8001 = 1
+    8002 = 3
+    8003 = 4
+    9000 = 2.0
+    10000 = "valor:"
 --- Cuádruplos ---
    0: (GOTO, _, _, 20)
-   1: (<, k, 2, _t1)
-   2: (GOTOF, _t1, _, 4)
-   3: (RETURN, 1, _, factorial)
+   1: (<, 3000, 8000, 7000)
+   2: (GOTOF, 7000, _, 4)
+   3: (RETURN, 8001, _, 1002)
    4: (ERA, _, _, factorial)
-   5: (-, k, 1, _t2)
-   6: (PARAM, _t2, _, par1)
+   5: (-, 3000, 8001, 5000)
+   6: (PARAM, 5000, _, 3000)
    7: (GOSUB, factorial, _, 1)
-   8: (=, factorial, _, _t3)
-   9: (*, k, _t3, _t4)
-  10: (RETURN, _t4, _, factorial)
+   8: (=, 1002, _, 5001)
+   9: (*, 3000, 5001, 5002)
+  10: (RETURN, 5002, _, 1002)
   11: (ENDFUNC, _, _, _)
-  12: (+, a, b, _t5)
-  13: (=, _t5, _, s)
-  14: (/, s, 2.0, _t6)
-  15: (RETURN, _t6, _, promedio)
+  12: (+, 3000, 3001, 5000)
+  13: (=, 5000, _, 3002)
+  14: (/, 3002, 9000, 6000)
+  15: (RETURN, 6000, _, 2001)
   16: (ENDFUNC, _, _, _)
-  17: (print, _, _, "valor:")
-  18: (print, _, _, x)
+  17: (print, _, _, 10000)
+  18: (print, _, _, 3000)
   19: (ENDFUNC, _, _, _)
-  20: (read, _, _, n)
+  20: (read, _, _, 1000)
   21: (ERA, _, _, factorial)
-  22: (PARAM, n, _, par1)
+  22: (PARAM, 1000, _, 3000)
   23: (GOSUB, factorial, _, 1)
-  24: (=, factorial, _, _t7)
-  25: (+, _t7, 1, _t8)
-  26: (=, _t8, _, r)
+  24: (=, 1002, _, 5000)
+  25: (+, 5000, 8001, 5001)
+  26: (=, 5001, _, 1001)
   27: (ERA, _, _, promedio)
-  28: (PARAM, n, _, par1)
-  29: (PARAM, r, _, par2)
+  28: (PARAM, 1000, _, 3000)
+  29: (PARAM, 1001, _, 3001)
   30: (GOSUB, promedio, _, 12)
-  31: (=, promedio, _, _t9)
-  32: (*, _t9, 2, _t10)
-  33: (=, _t10, _, p)
+  31: (=, 2001, _, 6000)
+  32: (*, 6000, 8000, 6001)
+  33: (=, 6001, _, 2000)
   34: (ERA, _, _, muestra)
   35: (ERA, _, _, factorial)
-  36: (PARAM, 3, _, par1)
+  36: (PARAM, 8002, _, 3000)
   37: (GOSUB, factorial, _, 1)
-  38: (=, factorial, _, _t11)
-  39: (PARAM, _t11, _, par1)
+  38: (=, 1002, _, 5002)
+  39: (PARAM, 5002, _, 3000)
   40: (GOSUB, muestra, _, 17)
   41: (ERA, _, _, factorial)
-  42: (PARAM, 4, _, par1)
+  42: (PARAM, 8003, _, 3000)
   43: (GOSUB, factorial, _, 1)
   44: (END, _, _, _)
 Programa aceptado.

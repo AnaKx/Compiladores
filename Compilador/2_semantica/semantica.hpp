@@ -1,12 +1,22 @@
-// Puntos neurálgicos para crear y llenar el Directorio de Funciones y las
-// Tablas de Variables.
+// ============================================================================
+// semantica.hpp
+// Fase 3: análisis semántico
 //
-// Se implementan como un listener de ANTLR: después de que el parser arma el
-// árbol, ParseTreeWalker lo recorre y llama enterX / exitX al entrar y salir de
-// cada regla. Cada método marcado con "PN" es un punto neurálgico.
+//   texto ─► scanner ─► tokens ─► parser ─► árbol ─► SEMÁNTICA ─► cuádruplos
 //
-// Los errores no detienen el análisis: se reportan con línea y columna y se
-// sigue con el resto del programa para encontrar todos los errores de una vez.
+// Qué hace:
+//   Clase AnalizadorSemantico: un listener de ANTLR con los puntos neurálgicos
+//   semánticos. Al recorrer el árbol llena el directorio con las declaraciones y
+//   reporta errores como variable no declarada, nombre repetido, número de
+//   argumentos incorrecto o return fuera de lugar.
+//
+// Papel en el proceso:
+//   No se usa sola: GeneradorCuadruplos (generador.hpp) hereda de esta clase, así
+//   que en el mismo recorrido del árbol se revisa (fase 3) y se traduce (fase 4).
+//   Recibe: el árbol del parser.  Entrega: el directorio lleno y el número de
+//   errores encontrados.
+//   Usa: tablas.hpp y el listener/parser que genera ANTLR.
+// ============================================================================
 
 #pragma once
 
@@ -50,7 +60,7 @@ public:
         bool ok = intentar(id, [&] { directorio.agregarFuncion(id->getText(), linea(id)); });
         // Si la funcion esta repetida no se analiza su cuerpo, para no mezclar sus variables con las de la primera ni generar errores en cascada
         omitirFuncion = !ok;
-        if (ok && ctx->type()) directorio.fijarRetorno(tipoDe(ctx->type()));
+        if (ok && ctx->type()) intentar(id, [&] { directorio.fijarRetorno(tipoDe(ctx->type()), linea(id)); });
     }
 
     // PN4 ID : type  (cada parametro) lleva a la firma y a la tabla local
@@ -61,8 +71,7 @@ public:
         agregarParametro(ctx->ID(), ctx->type());
     }
 
-    // PN5: ] ; (fin de la funcion), una funcion con tipo debe tener un return;
-    //      se cierra su ambito, se regresa a globales
+    // PN5: ] ; (fin de la funcion), una funcion con tipo debe tener un return; se cierra su ambito, se regresa a globales
     void exitFuncs(BabyDuckParser::FuncsContext* ctx) override {
         const Funcion* f = directorio.enFuncion();
         if (!omitirFuncion && f && !f->esVoid && !f->tieneReturn && ctx->ID()) {
@@ -167,7 +176,7 @@ private:
         return t->FLOAT() ? Tipo::FLOAT : Tipo::INT;
     }
 
-    // idlist : ID idlistElem ;  idlistElem : , ID idlistElem | ε
+    // idlist : ID idlistElem ; idlistElem : , ID idlistElem | ε
     static std::vector<Nodo*> idsDe(BabyDuckParser::IdlistContext* lista) {
         std::vector<Nodo*> ids;
         if (!lista) return ids;
